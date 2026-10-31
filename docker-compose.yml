@@ -1,0 +1,12 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment: { POSTGRES_DB: ledgerflow, POSTGRES_USER: ledgerflow, POSTGRES_PASSWORD: ledgerflow-local-only }
+    volumes: [ "ledgerflow-db:/var/lib/postgresql/data" ]
+    healthcheck: { test: ["CMD-SHELL","pg_isready -U ledgerflow"], interval: 5s, timeout: 3s, retries: 10 }
+  app:
+    build: .
+    depends_on: { db: { condition: service_healthy } }
+    environment: { DB_URL: "jdbc:postgresql://db:5432/ledgerflow", DB_USER: ledgerflow, DB_PASSWORD: ledgerflow-local-only, PORT: 8080 }
+    ports: [ "8080:8080" ]
+volumes: { ledgerflow-db: {} }

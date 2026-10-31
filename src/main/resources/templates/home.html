@@ -1,0 +1,9 @@
+<!DOCTYPE html><html xmlns:th="http://www.thymeleaf.org"><head><meta charset="utf-8"><title>LedgerFlow — Accounts</title><link rel="stylesheet" th:href="@{/css/app.css}"></head>
+<body><main><h1>Your accounts</h1><p th:if="${message}" class="ok" th:text="${message}"></p><p th:if="${error}" class="err" th:text="${error}"></p>
+<table><tr><th>ID</th><th>Name</th><th>Currency</th><th>Balance (minor units)</th><th></th></tr>
+<tr th:each="a : ${accounts}"><td th:text="${a.id}"></td><td th:text="${a.name}"></td><td th:text="${a.currency}"></td><td th:text="${a.balanceMinor}"></td><td><a th:href="@{/accounts/{id}(id=${a.id})}">Statement</a></td></tr></table>
+<h2>New transfer (USD, amount in minor units — e.g. 2500 = $25.00)</h2>
+<form method="post" th:action="@{/transfers}"><label>From account ID <input name="sourceAccountId" type="number" required></label>
+<label>To account ID <input name="destinationAccountId" type="number" required></label>
+<label>Amount (minor) <input name="amountMinor" type="number" min="1" required></label><button type="submit">Transfer</button></form>
+<form method="post" th:action="@{/logout}"><button type="submit" class="secondary">Sign out</button></form></main></body></html>

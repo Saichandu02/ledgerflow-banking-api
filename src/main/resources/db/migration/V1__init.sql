@@ -1,0 +1,6 @@
+CREATE TABLE app_user (id BIGSERIAL PRIMARY KEY, username VARCHAR(100) NOT NULL UNIQUE, password_hash VARCHAR(200) NOT NULL, role VARCHAR(30) NOT NULL DEFAULT 'USER');
+CREATE TABLE bank_account (id BIGSERIAL PRIMARY KEY, owner_id BIGINT NOT NULL REFERENCES app_user(id), name VARCHAR(120) NOT NULL, currency VARCHAR(3) NOT NULL, balance_minor BIGINT NOT NULL DEFAULT 0, version BIGINT NOT NULL DEFAULT 0);
+CREATE TABLE transfer_record (id BIGSERIAL PRIMARY KEY, idempotency_key VARCHAR(200) NOT NULL, request_hash VARCHAR(64) NOT NULL, source_id BIGINT NOT NULL REFERENCES bank_account(id), destination_id BIGINT NOT NULL REFERENCES bank_account(id), amount_minor BIGINT NOT NULL CHECK (amount_minor > 0), currency VARCHAR(3) NOT NULL, status VARCHAR(30) NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT now(), CONSTRAINT uq_transfer_idempotency_key UNIQUE (idempotency_key));
+CREATE TABLE ledger_entry (id BIGSERIAL PRIMARY KEY, transfer_id BIGINT REFERENCES transfer_record(id), account_id BIGINT NOT NULL REFERENCES bank_account(id), amount_minor BIGINT NOT NULL, entry_type VARCHAR(20) NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT now());
+CREATE INDEX idx_ledger_account_created ON ledger_entry(account_id, created_at DESC);
+CREATE INDEX idx_account_owner ON bank_account(owner_id);

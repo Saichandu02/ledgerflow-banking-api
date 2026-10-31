@@ -1,0 +1,10 @@
+# Decisions
+
+1. **Integer minor units, single currency (USD).** Avoids floating-point rounding entirely. Multi-currency FX is out of scope; a currency mismatch is rejected rather than silently converted.
+2. **Cached balance + immutable ledger, reconciled in tests.** Reading a cached column is O(1) vs. summing the ledger per request; the ledger remains the source of truth and `reconciles()` guards drift.
+3. **Pessimistic locking in ID order over optimistic locking.** Transfers are write-heavy on hot accounts; `FOR UPDATE` in a global order is simpler to reason about and deadlock-free by construction. The cost is lower concurrency on the same account pair — acceptable for a sandbox, noted as a limitation.
+4. **Idempotency in the database, not in memory.** A unique constraint survives restarts and multiple app instances; an in-memory map would not. Payload hash (SHA-256 of source|destination|amount|currency) distinguishes a true retry from key reuse.
+5. **CSRF: on for browser forms, excluded for `/api/**`.** The Thymeleaf UI is CSRF-protected. The JSON API is session-authenticated in this sandbox; excluding CSRF there lets scripted clients (and the smoke test) call it. A production API should instead use token auth (e.g. OAuth2 bearer) — recorded here as a deliberate, documented tradeoff, not an oversight.
+6. **Seeded demo users are local-only.** alice/bob with published demo passwords exist so anyone can run the demo; the seeder is disabled under the `test` profile and must be removed/replaced before any public deployment. Public demo mode would need restricted synthetic data and write rate limits (not implemented — see README limitations).
+7. **Local PostgreSQL for integration tests in this sandbox; Testcontainers deps retained.** Testcontainers needs Docker, which this sandbox lacks. The integration suite runs against a real local PostgreSQL (`ledgerflow_test`) — the same locking semantics — and CI uses a PostgreSQL service container. No H2/in-memory substitute is used for locking tests.
+8. **Thymeleaf server-rendered UI over a SPA.** Keeps the repo focused on transaction correctness; the API is the real contract.

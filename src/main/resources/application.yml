@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: ledgerflow
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/ledgerflow}
+    username: ${DB_USER:ledgerflow}
+    password: ${DB_PASSWORD:ledgerflow-local-only}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+  thymeleaf:
+    cache: false
+server:
+  port: ${PORT:8080}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+logging:
+  level:
+    dev.ledgerflow: INFO

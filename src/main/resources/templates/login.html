@@ -1,0 +1,6 @@
+<!DOCTYPE html><html xmlns:th="http://www.thymeleaf.org"><head><meta charset="utf-8"><title>LedgerFlow — Sign in</title><link rel="stylesheet" th:href="@{/css/app.css}"></head>
+<body><main class="card"><h1>LedgerFlow</h1><p>Transaction-safe banking sandbox. Fictional accounts only.</p>
+<p th:if="${param.error}" class="err">Invalid username or password.</p><p th:if="${param.logout}">Signed out.</p>
+<form method="post" th:action="@{/login}"><label>Username <input name="username" required></label>
+<label>Password <input name="password" type="password" required></label><button type="submit">Sign in</button></form>
+<p class="hint">Demo (local only): alice / alice-demo-123 &nbsp;·&nbsp; bob / bob-demo-123</p></main></body></html>

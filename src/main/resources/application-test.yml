@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: ${TEST_DB_URL:jdbc:postgresql://localhost:5432/ledgerflow_test}
+    username: ${TEST_DB_USER:ledgerflow}
+    password: ${TEST_DB_PASSWORD:ledgerflow-local-only}
+  jpa: { hibernate: { ddl-auto: validate } }
+  flyway: { enabled: true, clean-disabled: false }

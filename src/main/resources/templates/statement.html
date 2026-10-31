@@ -1,0 +1,5 @@
+<!DOCTYPE html><html xmlns:th="http://www.thymeleaf.org"><head><meta charset="utf-8"><title>LedgerFlow — Statement</title><link rel="stylesheet" th:href="@{/css/app.css}"></head>
+<body><main><h1 th:text="${account.name}">Account</h1><p>Balance: <b th:text="${account.balanceMinor}"></b> <span th:text="${account.currency}"></span> (minor units)</p>
+<table><tr><th>Entry</th><th>Transfer</th><th>Type</th><th>Amount (minor)</th><th>When</th></tr>
+<tr th:each="e : ${entries.content}"><td th:text="${e.id}"></td><td th:text="${e.transfer != null ? e.transfer.id : '—'}"></td><td th:text="${e.entryType}"></td><td th:text="${e.amountMinor}"></td><td th:text="${e.createdAt}"></td></tr></table>
+<p><a th:href="@{/}">← Back to accounts</a></p></main></body></html>
